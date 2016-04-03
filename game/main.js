@@ -1,5 +1,5 @@
 var game = new Phaser.Game(800, 490);
-
+var agent = new Agent();
 var mainState = {
     preload: function() {
         // This function will be executed at the beginning
@@ -36,12 +36,14 @@ var mainState = {
 
 
     update: function() {
+
         if (this.bird.died())
             this.restartGame();
         game.physics.arcade.overlap(
             this.bird.sprite, this.pipes.groups, this.restartGame, null, this);
         this.bird.update();
         this.labelScore.text = this.context.score;
+
     },
 
     // Restart the game
@@ -49,6 +51,33 @@ var mainState = {
         // Start the 'main' state, which restarts the game
         game.state.start('main');
     }
+};
+
+setInterval(function() {
+    var actionix = agent.forward(mainState.bird, mainState.pipes);
+    if (actionix == 1) {
+        mainState.bird.jump();
+    }
+    agent.backward(mainState.context.score);
+
+},200);
+
+var startLearn = function() {
+    agent.brain.learning = true;
+};
+var stopLearn = function() {
+    agent.brain.learning = false;
+};
+
+var saveNet = function() {
+    var j = agent.brain.value_net.toJSON();
+    document.getElementById('tt').value = JSON.stringify(j);
+};
+
+var loadNet = function() {
+    var t = document.getElementById('tt').value;
+    var j = JSON.parse(t);
+    agent.brain.value_net.fromJSON(j);
 };
 
 // Add and start the 'main' state to start the game

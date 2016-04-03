@@ -1,5 +1,5 @@
-var num_inputs = 27; // 9 eyes, each sees 3 numbers (wall, green, red thing proximity)
-var num_actions = 5; // 5 possible angles agent can turn
+var num_inputs = 14; // 9 eyes, each sees 3 numbers (wall, green, red thing proximity)
+var num_actions = 2; // 5 possible angles agent can turn
 var temporal_window = 1; // amount of temporal memory. 0 = agent lives in-the-moment :)
 var network_size = num_inputs*temporal_window + num_actions*temporal_window + num_inputs;
 

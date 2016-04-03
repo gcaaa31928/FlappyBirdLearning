@@ -39,4 +39,4 @@ function Bird(game) {
         if (this.sprite.angle < 20)
             this.sprite.angle += 1;
     }
-};
+}
