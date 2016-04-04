@@ -1,7 +1,9 @@
 var game = new Phaser.Game(800, 490);
 var agent = new Agent();
 var mainState = {
+    clock: 0,
     preload: function() {
+        this.created = false;
         // This function will be executed at the beginning
         // That's where we load the images and sounds
         this.context = {
@@ -14,7 +16,7 @@ var mainState = {
         this.pipes = new Pipes(this.context);
         this.pipes.preload();
 
-        game.load.image('pipe', 'assets/pipe.png');
+
     },
 
     create: function() {
@@ -32,18 +34,25 @@ var mainState = {
         this.bird.create();
         this.bird.setInputHandler();
         this.pipes.create();
+
+
+
+        this.created = true;
     },
 
 
     update: function() {
-
+        if (!this.created)
+            return;
+        this.clock ++;
         if (this.bird.died())
             this.restartGame();
         game.physics.arcade.overlap(
             this.bird.sprite, this.pipes.groups, this.restartGame, null, this);
         this.bird.update();
         this.labelScore.text = this.context.score;
-
+        if (this.clock % 10 == 0)
+            learning();
     },
 
     // Restart the game
@@ -53,14 +62,14 @@ var mainState = {
     }
 };
 
-setInterval(function() {
+function learning() {
     var actionix = agent.forward(mainState.bird, mainState.pipes);
     if (actionix == 1) {
         mainState.bird.jump();
     }
-    agent.backward(mainState.context.score);
-
-},200);
+    var hit_wall_reward = mainState.bird.eyesOn(mainState.pipes);
+    agent.backward(mainState.context.score + hit_wall_reward * 100);
+}
 
 var startLearn = function() {
     agent.brain.learning = true;

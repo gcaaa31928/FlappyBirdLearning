@@ -15,7 +15,7 @@ function Pipes(context) {
     };
 
     this.addOnePipe = function (x, y) {
-        var pipe = this.game.add.sprite(x, y, 'pipe');
+        var pipe = this.game.add.sprite(x, y, 'pipes');
         this.groups.add(pipe);
         this.game.physics.arcade.enable(pipe);
         pipe.body.velocity.x = -200;
@@ -33,5 +33,6 @@ function Pipes(context) {
             }
         this.context.score += 1;
     };
+
 
 }
