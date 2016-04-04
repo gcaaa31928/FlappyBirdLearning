@@ -36,16 +36,20 @@ function Bird(game) {
         animation.start();
     };
 
-    this.died = function () {
-        return (this.sprite.y < 0 || this.sprite.y > 450);
-    };
-
     this.update = function () {
         if (this.sprite.angle < 20)
             this.sprite.angle += 1;
     };
+    
+    this.died = function() {
+        return (this.sprite.y < 0 || this.sprite.y > 450);
+    };
 
-    this.eyesOn = function (pipes) {
+    this.almostDied = function (pipes) {
+        if (this.sprite.y < 50 || this.sprite.y > 400) {
+            console.log('almost died');
+            return true;
+        }
         var ray = new Phaser.Line(this.sprite.x, this.sprite.y, this.sprite.x + this.sprite.width + 1000, this.sprite.y);
         var weight = 1;
         for (var i = 0; i < pipes.groups.length; i++) {
@@ -63,6 +67,11 @@ function Bird(game) {
         this.bitmap.context.lineTo(this.sprite.x + this.sprite.width + 1000, this.sprite.y);
         this.bitmap.context.stroke();
         this.bitmap.dirty = true;
+        if (weight <= 0.1) {
+            console.log('almost died');
+            return true;
+        }
         return weight;
     };
+
 }

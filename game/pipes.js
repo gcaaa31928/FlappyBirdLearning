@@ -31,6 +31,10 @@ function Pipes(context) {
                 this.addOnePipe(800, i * 60 + 10);
                 this.closestPipe.push(new Phaser.Point(800, i * 60 + 10));
             }
+        var that = this;
+        this.groups.forEachDead(function(pipe) {
+            that.groups.remove(pipe);
+        });
         this.context.score += 1;
     };
 

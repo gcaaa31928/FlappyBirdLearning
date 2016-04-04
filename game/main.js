@@ -58,6 +58,7 @@ var mainState = {
     // Restart the game
     restartGame: function() {
         // Start the 'main' state, which restarts the game
+        game.time.events.remove(this.timer);
         game.state.start('main');
     }
 };
@@ -67,8 +68,10 @@ function learning() {
     if (actionix == 1) {
         mainState.bird.jump();
     }
-    var hit_wall_reward = mainState.bird.eyesOn(mainState.pipes);
-    agent.backward(mainState.context.score + hit_wall_reward * 100);
+    var reward = 1;
+    if (mainState.bird.almostDied(mainState.pipes))
+        reward = -1000;
+    agent.backward(reward);
 }
 
 var startLearn = function() {
