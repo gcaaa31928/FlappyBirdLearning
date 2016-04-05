@@ -51,7 +51,7 @@ var mainState = {
             this.bird.sprite, this.pipes.groups, this.restartGame, null, this);
         this.bird.update();
         this.labelScore.text = this.context.score;
-        if (this.clock % 10 == 0)
+        if (this.clock % 1 == 0)
             learning();
     },
 

@@ -1,32 +1,75 @@
-var num_inputs = 28 * 2; // 9 eyes, each sees 3 numbers (wall, green, red thing proximity)
-var num_actions = 2; // 5 possible angles agent can turn
-var temporal_window = 1; // amount of temporal memory. 0 = agent lives in-the-moment :)
-var network_size = num_inputs*temporal_window + num_actions*temporal_window + num_inputs;
+var brain = function (width_dist, height_dist) {
+    // 0 for click, 1 for don't click
+    this.width_dist = width_dist;
+    this.height_dist = height_dist;
+    this.action = 'noClick';
+    this.QState = [];
+    this.current_state = [0, 0];
+    this.resolution = 5;
+    this.learning_rate = 0.9;
+    this.random_explore = 0.0;
+    for (var i = 0; i < width_dist; i++) {
+        this.QState[i] = [];
+        for (var j = 0; j < height_dist; j++) {
+            this.QState[i][j] = {
+                'click': 0,
+                'noClick': 0
+            }
+        }
+    }
 
-// the value function network computes a value of taking any of the possible actions
-// given an input state. Here we specify one explicitly the hard way
-// but user could also equivalently instead use opt.hidden_layer_sizes = [20,20]
-// to just insert simple relu hidden layers.
-var layer_defs = [];
-layer_defs.push({type:'input', out_sx:1, out_sy:1, out_depth:network_size});
-layer_defs.push({type:'fc', num_neurons: 50, activation:'relu'});
-layer_defs.push({type:'fc', num_neurons: 50, activation:'relu'});
-layer_defs.push({type:'regression', num_neurons:num_actions});
+    this.getState = function (vertical_dist, horizontal_dist) {
+        this.next_state = [vertical_dist, horizontal_dist];
+    };
 
-// options for the Temporal Difference learner that trains the above net
-// by backpropping the temporal difference learning rule.
-var tdtrainer_options = {learning_rate:0.001, momentum:0.0, batch_size:64, l2_decay:0.01};
+    this.updateState = function (reward) {
+        var vertical_state = Math.min(
+            this.height_dist, this.current_state[0]
+        );
+        var horizontal_state = Math.min(
+            this.width_dist, this.current_state[1]
+        );
+        var vertical_next_state = Math.min(
+            this.height_dist, this.next_state[0]
+        );
+        var horizontal_next_state = Math.min(
+            this.width_dist, this.next_state[1]
+        );
+        vertical_state /= this.resolution;
+        horizontal_state /= this.resolution;
+        vertical_next_state /= this.resolution;
+        horizontal_next_state /= this.resolution;
 
-var opt = {};
-opt.temporal_window = temporal_window;
-opt.experience_size = 30000;
-opt.start_learn_threshold = 1000;
-opt.gamma = 0.7;
-opt.learning_steps_total = 200000;
-opt.learning_steps_burnin = 3000;
-opt.epsilon_min = 0.05;
-opt.epsilon_test_time = 0.05;
-opt.layer_defs = layer_defs;
-opt.tdtrainer_options = tdtrainer_options;
+        var click_q_next_value = this.QState[horizontal_next_state][vertical_next_state]['click'];
+        var no_click_q_next_value = this.QState[horizontal_next_state][vertical_next_state]['noClick'];
+        var q_next_value = Math.max(click_q_next_value, no_click_q_next_value);
+        var q_current_value = this.QState[horizontal_state][vertical_state][this.action];
+        this.QState[horizontal_state][vertical_state][this.action] =
+            q_current_value + this.learning_rate * (reward + q_next_value - q_current_value);
+        this.current_state = this.next_state.slice();
+    };
 
-var brain = new deepqlearn.Brain(num_inputs, num_actions, opt); 
+    this.getAction = function () {
+        if (Math.random() <= this.random_explore) {
+            this.action = random(0, 1) == 1 ? 'click' : 'noClick';
+        } else {
+            var vertical_state = Math.min(
+                this.height_dist, this.current_state[0]
+            );
+            var horizontal_state = Math.min(
+                this.width_dist, this.current_state[1]
+            );
+            vertical_state /= this.resolution;
+            horizontal_state /= this.resolution;
+            click_q_value = this.QState[horizontal_state][vertical_state]['click'];
+            no_click_q_value = this.QState[horizontal_state][vertical_state]['noClick'];
+            this.action = click_q_value > no_click_q_value ? 'click' : 'noClick';
+        }
+        return this.action;
+    }
+
+
+};
+function random(min, max) {
+    return Math.round(Math.random() * (max - min) + min);
+}

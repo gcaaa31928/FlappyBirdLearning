@@ -16,7 +16,6 @@
     "tests"
   ],
   "dependencies": {
-    "phaser": "^2.4.6",
-    "convnetjs": "convnet#*"
+    "phaser": "^2.4.6"
   }
 }
