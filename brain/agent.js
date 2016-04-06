@@ -1,23 +1,29 @@
-var Agent = function () {
-    this.actions = [];
-    this.brain = brain;
+var Agent = function (width_dist, height_dist) {
+    this.brain = new Brain(width_dist, height_dist);
 };
 
 Agent.prototype = {
-    forward: function (bird, pipes) {
-        var input_array = [];
-        input_array[0] = bird.sprite.x;
-        input_array[1] = bird.sprite.y;
-        // for (var i = 1; i <= pipes.groups.length; i++) {
-        //     var pipe = pipes.groups.getChildAt(i - 1);
-        //     input_array[i * 2] = pipe.x;
-        //     input_array[i * 2 + 1] = pipe.y;
-        // }
-        this.actionix = this.brain.forward(input_array);
-        console.log(this.actionix);
-        return this.actionix;
-    },
-    backward: function (score) {
-        this.brain.backward(score);
+    think: function (bird, pipes, reward) {
+        var bird_mouth_x = bird.sprite.x + bird.sprite.width;
+        var bird_mouth_y = bird.sprite.y;
+
+        var closest_pipe_x = 9999;
+        var closest_pipe_y = 9999;
+        for (var i = 0; i < pipes.groups.length; i++) {
+            var pipe = pipes.groups.getChildAt(i);
+            if (bird_mouth_x >= pipe.x + pipe.width)
+                continue;
+            if (pipe.marked && pipe.x + pipe.width < closest_pipe_x) {
+                closest_pipe_x = pipe.x + pipe.width;
+                closest_pipe_y = pipe.y;
+            }
+        }
+
+        var vertical_dist = bird_mouth_y - closest_pipe_y;
+        var horizontal_dist = closest_pipe_x - bird_mouth_x;
+        // console.log(vertical_dist, horizontal_dist);
+        this.brain.getState(vertical_dist, horizontal_dist);
+        this.brain.updateState(reward);
+        return this.brain.getAction();
     }
 };

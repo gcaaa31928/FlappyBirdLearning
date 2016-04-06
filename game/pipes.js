@@ -14,8 +14,9 @@ function Pipes(context) {
         this.timer = this.game.time.events.loop(1500, this.addRowOfPipes, this);
     };
 
-    this.addOnePipe = function (x, y) {
+    this.addOnePipe = function (x, y, mark) {
         var pipe = this.game.add.sprite(x, y, 'pipes');
+        pipe.marked = mark;
         this.groups.add(pipe);
         this.game.physics.arcade.enable(pipe);
         pipe.body.velocity.x = -200;
@@ -26,13 +27,15 @@ function Pipes(context) {
     this.addRowOfPipes = function () {
         this.closestPipe = [];
         var hole = Math.floor(Math.random() * 5) + 1;
-        for (var i = 0; i < 8; i++)
-            if (i != hole && i != hole + 1) {
-                this.addOnePipe(800, i * 60 + 10);
-                this.closestPipe.push(new Phaser.Point(800, i * 60 + 10));
+        for (var i = 0; i < 8; i++) {
+            if (i == hole - 1) {
+                this.addOnePipe(800, i * 60 + 10, true);
+            } else if (i != hole && i != hole + 1) {
+                this.addOnePipe(800, i * 60 + 10, false);
             }
+        }
         var that = this;
-        this.groups.forEachDead(function(pipe) {
+        this.groups.forEachDead(function (pipe) {
             that.groups.remove(pipe);
         });
         this.context.score += 1;

@@ -1,4 +1,4 @@
-var brain = function (width_dist, height_dist) {
+var Brain = function (width_dist, height_dist) {
     // 0 for click, 1 for don't click
     this.width_dist = width_dist;
     this.height_dist = height_dist;
@@ -6,11 +6,11 @@ var brain = function (width_dist, height_dist) {
     this.QState = [];
     this.current_state = [0, 0];
     this.resolution = 5;
-    this.learning_rate = 0.9;
+    this.learning_rate = 0.7;
     this.random_explore = 0.0;
-    for (var i = 0; i < width_dist; i++) {
+    for (var i = 0; i <= width_dist; i++) {
         this.QState[i] = [];
-        for (var j = 0; j < height_dist; j++) {
+        for (var j = 0; j <= height_dist; j++) {
             this.QState[i][j] = {
                 'click': 0,
                 'noClick': 0
@@ -39,6 +39,10 @@ var brain = function (width_dist, height_dist) {
         horizontal_state /= this.resolution;
         vertical_next_state /= this.resolution;
         horizontal_next_state /= this.resolution;
+        vertical_state = vertical_state < 0 ? 0 : Math.floor(vertical_state);
+        horizontal_state = horizontal_state < 0 ? 0 : Math.floor(horizontal_state);
+        vertical_next_state = vertical_next_state < 0 ? 0 : Math.floor(vertical_next_state);
+        horizontal_next_state = horizontal_next_state < 0 ? 0 : Math.floor(horizontal_next_state);
 
         var click_q_next_value = this.QState[horizontal_next_state][vertical_next_state]['click'];
         var no_click_q_next_value = this.QState[horizontal_next_state][vertical_next_state]['noClick'];
@@ -61,11 +65,21 @@ var brain = function (width_dist, height_dist) {
             );
             vertical_state /= this.resolution;
             horizontal_state /= this.resolution;
+            vertical_state = vertical_state < 0 ? 0 : Math.floor(vertical_state);
+            horizontal_state = horizontal_state < 0 ? 0 : Math.floor(horizontal_state);
             click_q_value = this.QState[horizontal_state][vertical_state]['click'];
             no_click_q_value = this.QState[horizontal_state][vertical_state]['noClick'];
             this.action = click_q_value > no_click_q_value ? 'click' : 'noClick';
         }
         return this.action;
+    };
+
+    this.toJson = function() {
+        return JSON.stringify(this.QState);
+    };
+
+    this.fromJson = function(json) {
+      this.QState = JSON.parse(json);
     }
 
 

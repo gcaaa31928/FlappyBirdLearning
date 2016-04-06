@@ -1,8 +1,11 @@
 var game = new Phaser.Game(800, 490);
-var agent = new Agent();
+var agent = new Agent(400, 300);
 var mainState = {
+
     clock: 0,
     preload: function() {
+        game.stage.disableVisibilityChange = true;
+
         this.created = false;
         // This function will be executed at the beginning
         // That's where we load the images and sounds
@@ -44,34 +47,32 @@ var mainState = {
     update: function() {
         if (!this.created)
             return;
-        this.clock ++;
-        if (this.bird.died())
+        this.reward = 1;
+        if (this.bird.died()) {
             this.restartGame();
+            this.reward = -1000;
+        }
         game.physics.arcade.overlap(
             this.bird.sprite, this.pipes.groups, this.restartGame, null, this);
         this.bird.update();
         this.labelScore.text = this.context.score;
-        if (this.clock % 1 == 0)
-            learning();
+        learning();
     },
 
     // Restart the game
     restartGame: function() {
         // Start the 'main' state, which restarts the game
+        this.reward = -1000;
         game.time.events.remove(this.timer);
         game.state.start('main');
     }
 };
 
 function learning() {
-    var actionix = agent.forward(mainState.bird, mainState.pipes);
-    if (actionix == 1) {
+    var actionix = agent.think(mainState.bird, mainState.pipes, mainState.reward);
+    if (actionix == 'click') {
         mainState.bird.jump();
     }
-    var reward = 1;
-    if (mainState.bird.almostDied(mainState.pipes))
-        reward = -1000;
-    agent.backward(reward);
 }
 
 var startLearn = function() {
@@ -82,14 +83,13 @@ var stopLearn = function() {
 };
 
 var saveNet = function() {
-    var j = agent.brain.value_net.toJSON();
-    document.getElementById('tt').value = JSON.stringify(j);
+    var j = agent.brain.toJson();
+    document.getElementById('tt').value = j;
 };
 
 var loadNet = function() {
     var t = document.getElementById('tt').value;
-    var j = JSON.parse(t);
-    agent.brain.value_net.fromJSON(j);
+    agent.brain.fromJson(t);
 };
 
 // Add and start the 'main' state to start the game
