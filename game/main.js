@@ -5,7 +5,7 @@ var mainState = {
     clock: 0,
     preload: function() {
         game.stage.disableVisibilityChange = true;
-
+        game.config.forceSetTimeOut = true;
         this.created = false;
         // This function will be executed at the beginning
         // That's where we load the images and sounds
@@ -69,6 +69,7 @@ var mainState = {
 };
 
 function learning() {
+    console.log(mainState.reward);
     var actionix = agent.think(mainState.bird, mainState.pipes, mainState.reward);
     if (actionix == 'click') {
         mainState.bird.jump();
