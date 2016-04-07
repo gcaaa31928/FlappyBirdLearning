@@ -1,9 +1,12 @@
-var game = new Phaser.Game(800, 490);
+var game = new Phaser.Game(800, 490, Phaser.AUTO, 'game_area');
 var agent = new Agent(400, 300);
+var reward_chart = new rewardChart();
+var reward_arr = [];
 var mainState = {
 
     clock: 0,
     preload: function() {
+
         game.stage.disableVisibilityChange = true;
         game.config.forceSetTimeOut = true;
         this.created = false;
@@ -18,14 +21,12 @@ var mainState = {
 
         this.pipes = new Pipes(this.context);
         this.pipes.preload();
-
-
     },
 
     create: function() {
         // Change the background color of the game to blue
-        game.stage.backgroundColor = '#71c5cf';
 
+        game.stage.backgroundColor = '#71c5cf';
         this.score = 0;
         this.labelScore = game.add.text(20, 20, "0",
             { font: "30px Arial", fill: "#ffffff" });
@@ -56,6 +57,8 @@ var mainState = {
             this.bird.sprite, this.pipes.groups, this.restartGame, null, this);
         this.bird.update();
         this.labelScore.text = this.context.score;
+
+
         learning();
     },
 
@@ -63,13 +66,14 @@ var mainState = {
     restartGame: function() {
         // Start the 'main' state, which restarts the game
         this.reward = -1000;
+        // reward_arr.push();
+        reward_chart.updateData([new Date().getTime(), this.context.score]);
         game.time.events.remove(this.timer);
         game.state.start('main');
     }
 };
 
 function learning() {
-    console.log(mainState.reward);
     var actionix = agent.think(mainState.bird, mainState.pipes, mainState.reward);
     if (actionix == 'click') {
         mainState.bird.jump();

@@ -3,23 +3,26 @@
 <head>
     <meta charset="utf-8" />
     <title> Flappy Bird Learning</title>
-    <script type="text/javascript" src="bower_components/phaser/build/phaser.min.js"></script>
-    <script type="text/javascript" src="bower_components/convnetjs/build/convnet.js"></script>
-    <script type="text/javascript" src="bower_components/convnetjs/build/util.js"></script>
-    <script type="text/javascript" src="bower_components/convnetjs/build/deepqlearn.js"></script>
-    <script type="text/javascript" src="game/bird.js"></script>
-    <script type="text/javascript" src="game/pipes.js"></script>
-    <script type="text/javascript" src="brain/brain.js"></script>
-    <script type="text/javascript" src="brain/agent.js"></script>
-    <script type="text/javascript" src="game/main.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles/main.css">
 </head>
 
 <body>
+<div id="game_area"></div>
 <button onclick="startLearn()">Start Learning</button>
 <button onclick="stopLearn()">Stop Learning</button>
 <button onclick="saveNet()">Save Net</button>
 <button onclick="loadNet()">Load Net</button>
 <textarea id="tt" style="width:100%; height:200px;">
 </textarea>
+<div id="reward_chart"></div>
+<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="bower_components/phaser/build/phaser.min.js"></script>
+<script type="text/javascript" src="game/rewardChart.js"></script>
+<script type="text/javascript" src="brain/brain.js"></script>
+<script type="text/javascript" src="brain/agent.js"></script>
+<script type="text/javascript" src="game/bird.js"></script>
+<script type="text/javascript" src="game/pipes.js"></script>
+<script type="text/javascript" src="game/main.js"></script>
+
 </body>
 </html>
