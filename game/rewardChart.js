@@ -21,13 +21,10 @@ var rewardChart = function() {
         .scale(y)
         .orient("left");
 
-    var line = d3.svg.line()
-        .x(function (d) {
-            return x(d.date);
-        })
-        .y(function (d) {
-            return y(d.close);
-        });
+    var valueline = d3.svg.line()
+        .x(function(d) { return x(d.date); })
+        .y(function(d) { return y(d.close); });
+
 
     this.svg = d3.select("#reward_chart").append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -39,25 +36,6 @@ var rewardChart = function() {
 
 
     this.draw = function(arrData) {
-        data = arrData.map(function (d) {
-            return {
-                date: new Date(d[0]),
-                close: d[1]
-            };
-        });
-
-        x.domain(d3.extent(data, function (d) {
-            return d.date;
-        }));
-        y.domain(d3.extent(data, function (d) {
-            return d.close;
-        }));
-
-        // svg.append("g")
-        //     .attr("class", "x axis")
-        //     .attr("transform", "translate(0," + height + ")")
-        //     .call(xAxis);
-
         this.svg.append("g")
             .attr("class", "y axis")
             .call(yAxis)
@@ -69,41 +47,33 @@ var rewardChart = function() {
             .text("Reward");
 
         this.svg.append("path")
-            .datum(data)
             .attr("class", "line")
-            .attr("d", line);
 
-        function type(d) {
-            d.date = formatDate.parse(d.date);
-            d.close = +d.close;
-            return d;
-        }
     };
 
     this.updateData = function(arrData) {
-        // console.log(arrData);
-        // data = arrData.map(function (d) {
-        //     return {
-        //         date: new Date(d[0]),
-        //         close: d[1]
-        //     };
-        // });
-        //
-        // x.domain(d3.extent(data, function (d) {
-        //     return d.date;
-        // }));
-        // y.domain(d3.extent(data, function (d) {
-        //     return d.close;
-        // }));
+         var data = arrData.map(function (d) {
+             return {
+                 date: d[0],
+                 close: d[1]
+             };
+         });
+         x.domain(d3.extent(data, function (d) {
+             return d.date;
+         }));
+         y.domain(d3.extent(data, function (d) {
+             return d.close;
+         }));
+
         var svg = d3.select("#reward_chart").transition();
 
         // Make the changes
         svg.select(".line")   // change the line
             .duration(750)
-            .attr("d", line(arrData));
-        svg.select(".x.axis") // change the x axis
+            .attr("d", valueline(data));
+        svg.select(".y.axis") // change the y axis
             .duration(750)
-            .call(xAxis);
+            .call(yAxis);
 
     };
     this.draw([]);

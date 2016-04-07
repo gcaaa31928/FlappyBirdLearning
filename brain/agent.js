@@ -1,4 +1,6 @@
 var Agent = function (width_dist, height_dist) {
+    this.width_dist = width_dist;
+    this.height_dist = height_dist;
     this.brain = new Brain(width_dist, height_dist);
 };
 
