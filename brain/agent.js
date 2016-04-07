@@ -4,6 +4,7 @@ var Agent = function (width_dist, height_dist) {
 
 Agent.prototype = {
     think: function (bird, pipes, reward) {
+        
         var bird_back_x = bird.sprite.x;
         var bird_back_y = bird.sprite.y;
 
