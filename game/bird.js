@@ -11,9 +11,6 @@ function Bird(game) {
         this.game.physics.arcade.enable(this.sprite);
         this.sprite.body.gravity.y = 1000;
 
-        this.bitmap = this.game.add.bitmapData(this.game.width, this.game.height);
-        this.bitmap.context.fillStyle = 'rgb(255, 255, 255)';
-        this.bitmap.context.strokeStyle = 'rgb(255, 255, 255)';
         this.game.add.image(0, 0, this.bitmap);
     };
 
@@ -61,12 +58,7 @@ function Bird(game) {
                 weight = distance / 1000;
             }
         }
-        this.bitmap.context.clearRect(0, 0, game.width, game.height);
-        this.bitmap.context.beginPath();
-        this.bitmap.context.moveTo(this.sprite.x, this.sprite.y);
-        this.bitmap.context.lineTo(this.sprite.x + this.sprite.width + 1000, this.sprite.y);
-        this.bitmap.context.stroke();
-        this.bitmap.dirty = true;
+
         if (weight <= 0.1) {
             console.log('almost died');
             return true;

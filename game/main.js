@@ -62,6 +62,11 @@ var mainState = {
         learning();
     },
 
+    destroy: function() {
+        this.bird.sprite.destroy();
+        this.pipes.groups.destroy();
+    },
+
     // Restart the game
     restartGame: function () {
         // Start the 'main' state, which restarts the game
