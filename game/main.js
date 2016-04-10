@@ -92,10 +92,10 @@ function learning() {
 }
 
 var startLearn = function () {
-    agent.brain.learning = true;
+    game.paused = false;
 };
 var stopLearn = function () {
-    agent.brain.learning = false;
+    game.paused = true;
 };
 
 var saveNet = function () {

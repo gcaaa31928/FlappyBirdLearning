@@ -67,8 +67,8 @@ var Brain = function (width_dist, height_dist) {
             horizontal_state /= this.resolution;
             vertical_state = vertical_state < 0 ? 0 : Math.floor(vertical_state);
             horizontal_state = horizontal_state < 0 ? 0 : Math.floor(horizontal_state);
-            click_q_value = this.QState[horizontal_state][vertical_state]['click'];
-            no_click_q_value = this.QState[horizontal_state][vertical_state]['noClick'];
+            var click_q_value = this.QState[horizontal_state][vertical_state]['click'];
+            var no_click_q_value = this.QState[horizontal_state][vertical_state]['noClick'];
             this.action = click_q_value > no_click_q_value ? 'click' : 'noClick';
         }
         return this.action;
