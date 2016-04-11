@@ -6,7 +6,7 @@ var Brain = function (width_dist, height_dist) {
     this.QState = [];
     this.current_state = [0, 0];
     this.resolution = 5;
-    this.learning_rate = 0.7;
+    this.learning_rate = 0.9;
     this.random_explore = 0.0;
     for (var i = 0; i <= width_dist; i++) {
         this.QState[i] = [];
@@ -70,16 +70,19 @@ var Brain = function (width_dist, height_dist) {
             var click_q_value = this.QState[horizontal_state][vertical_state]['click'];
             var no_click_q_value = this.QState[horizontal_state][vertical_state]['noClick'];
             this.action = click_q_value > no_click_q_value ? 'click' : 'noClick';
+
+            console.log(this.current_state[0], vertical_state);
+            // console.log(vertical_state, horizontal_state, click_q_value, no_click_q_value, this.action);
         }
         return this.action;
     };
 
-    this.toJson = function() {
+    this.toJson = function () {
         return JSON.stringify(this.QState);
     };
 
-    this.fromJson = function(json) {
-      this.QState = JSON.parse(json);
+    this.fromJson = function (json) {
+        this.QState = JSON.parse(json);
     }
 
 

@@ -1,5 +1,5 @@
 var game = new Phaser.Game(800, 490, Phaser.AUTO, 'game_area');
-var agent = new Agent(400, 300);
+var agent = new Agent(600, 300);
 var reward_chart = new rewardChart();
 var net_chart = new netChart(agent.width_dist / 20, agent.height_dist / 15);
 var reward_arr = [];
@@ -74,6 +74,7 @@ var mainState = {
         drawChart();
         game.time.events.remove(this.timer);
         game.state.start('main');
+        console.clear();
         this.times++;
     }
 };
