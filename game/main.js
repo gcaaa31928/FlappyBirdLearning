@@ -1,10 +1,10 @@
 var game = new Phaser.Game(800, 490, Phaser.AUTO, 'game_area');
-var agent = new Agent(0, 600, -250, 250);
+var agent = new Agent(0, 180, -140, 250);
 var reward_chart = new rewardChart();
 var net_chart = new netChart(agent.width_dist / 20, agent.height_dist / 15);
 var reward_arr = [];
 var mainState = {
-
+    state: 'init',
     times: 0,
     preload: function () {
 
@@ -22,6 +22,7 @@ var mainState = {
 
         this.pipes = new Pipes(this.context);
         this.pipes.preload();
+        this.state = 'preload';
     },
 
     create: function () {
@@ -42,23 +43,30 @@ var mainState = {
 
 
         this.created = true;
+        this.state = 'created';
     },
 
 
     update: function () {
+        if (this.state == 'died') {
+            return;
+        }
+        this.state = 'playing';
         if (!this.created)
             return;
         this.reward = 1;
         if (this.bird.died()) {
-            this.restartGame();
             this.reward = -1000;
+            this.restartGame();
+            return;
         }
-        game.physics.arcade.overlap(
-            this.bird.sprite, this.pipes.groups, this.restartGame, null, this);
+        if (game.physics.arcade.overlap(
+            this.bird.sprite, this.pipes.groups, this.restartGame, null, this)) {
+            return;
+        }
+
         this.bird.update();
         this.labelScore.text = this.context.score;
-
-
         learning();
     },
 
@@ -70,11 +78,13 @@ var mainState = {
     // Restart the game
     restartGame: function () {
         // Start the 'main' state, which restarts the game
+
         this.reward = -1000;
         drawChart();
         game.time.events.remove(this.timer);
         game.state.start('main');
-        console.clear();
+        this.state = 'died';
+        learning();
         this.times++;
     }
 };

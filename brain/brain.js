@@ -7,12 +7,12 @@ var Brain = function (width_low, width_high, height_low, height_high) {
     this.action = 'noClick';
     this.QState = [];
     this.current_state = [0, 0];
-    this.resolution = 5;
+    this.resolution = 10;
     this.learning_rate = 0.9;
     this.random_explore = 0.0001;
-    for (var i = 0; i <= this.width_dist; i++) {
+    for (var i = 0; i <= this.width_dist/this.resolution; i++) {
         this.QState[i] = [];
-        for (var j = 0; j <= this.height_dist; j++) {
+        for (var j = 0; j <= this.height_dist/this.resolution; j++) {
             this.QState[i][j] = {
                 'click': 0,
                 'noClick': 0
