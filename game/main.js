@@ -1,5 +1,5 @@
 var game = new Phaser.Game(800, 490, Phaser.AUTO, 'game_area');
-var agent = new Agent(600, 300);
+var agent = new Agent(0, 600, -250, 250);
 var reward_chart = new rewardChart();
 var net_chart = new netChart(agent.width_dist / 20, agent.height_dist / 15);
 var reward_arr = [];
@@ -86,6 +86,7 @@ function drawChart() {
 }
 
 function learning() {
+    console.log(mainState.reward);
     var actionix = agent.think(mainState.bird, mainState.pipes, mainState.reward);
     if (actionix == 'click') {
         mainState.bird.jump();

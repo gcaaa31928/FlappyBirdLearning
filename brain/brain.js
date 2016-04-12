@@ -1,16 +1,18 @@
-var Brain = function (width_dist, height_dist) {
+var Brain = function (width_low, width_high, height_low, height_high) {
     // 0 for click, 1 for don't click
-    this.width_dist = width_dist;
-    this.height_dist = height_dist;
+    this.width_range = [width_low, width_high];
+    this.height_range = [height_low, height_high];
+    this.width_dist = width_high - width_low;
+    this.height_dist = height_high - height_low;
     this.action = 'noClick';
     this.QState = [];
     this.current_state = [0, 0];
     this.resolution = 5;
     this.learning_rate = 0.9;
-    this.random_explore = 0.0;
-    for (var i = 0; i <= width_dist; i++) {
+    this.random_explore = 0.0001;
+    for (var i = 0; i <= this.width_dist; i++) {
         this.QState[i] = [];
-        for (var j = 0; j <= height_dist; j++) {
+        for (var j = 0; j <= this.height_dist; j++) {
             this.QState[i][j] = {
                 'click': 0,
                 'noClick': 0
@@ -55,6 +57,7 @@ var Brain = function (width_dist, height_dist) {
 
     this.getAction = function () {
         if (Math.random() <= this.random_explore) {
+            console.log('===== random explore =====');
             this.action = random(0, 1) == 1 ? 'click' : 'noClick';
         } else {
             var vertical_state = Math.min(
@@ -70,8 +73,8 @@ var Brain = function (width_dist, height_dist) {
             var click_q_value = this.QState[horizontal_state][vertical_state]['click'];
             var no_click_q_value = this.QState[horizontal_state][vertical_state]['noClick'];
             this.action = click_q_value > no_click_q_value ? 'click' : 'noClick';
+            //console.log(this.current_state[0]);
 
-            console.log(this.current_state[0], vertical_state);
             // console.log(vertical_state, horizontal_state, click_q_value, no_click_q_value, this.action);
         }
         return this.action;

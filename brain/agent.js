@@ -1,7 +1,7 @@
-var Agent = function (width_dist, height_dist) {
-    this.width_dist = width_dist;
-    this.height_dist = height_dist;
-    this.brain = new Brain(width_dist, height_dist);
+var Agent = function (width_low, width_high, height_low, height_high) {
+    this.width_range = [width_low, width_high];
+    this.height_range = [height_low, height_high];
+    this.brain = new Brain(width_low, width_high, height_low, height_high)
 };
 
 Agent.prototype = {
@@ -22,9 +22,8 @@ Agent.prototype = {
             }
         }
 
-        var vertical_dist = bird_back_y - closest_pipe_y;
-        var horizontal_dist = closest_pipe_x - bird_back_x;
-        // console.log(vertical_dist, horizontal_dist);
+        var vertical_dist = bird_back_y - closest_pipe_y - this.height_range[0];
+        var horizontal_dist = closest_pipe_x - bird_back_x - this.width_range[0];
         this.brain.getState(vertical_dist, horizontal_dist);
         this.brain.updateState(reward);
         return this.brain.getAction();
