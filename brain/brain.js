@@ -10,9 +10,9 @@ var Brain = function (width_low, width_high, height_low, height_high) {
     this.resolution = 10;
     this.learning_rate = 0.9;
     this.random_explore = 0.0001;
-    for (var i = 0; i <= this.width_dist/this.resolution; i++) {
+    for (var i = 0; i <= this.width_dist / this.resolution; i++) {
         this.QState[i] = [];
-        for (var j = 0; j <= this.height_dist/this.resolution; j++) {
+        for (var j = 0; j <= this.height_dist / this.resolution; j++) {
             this.QState[i][j] = {
                 'click': 0,
                 'noClick': 0
@@ -52,7 +52,7 @@ var Brain = function (width_low, width_high, height_low, height_high) {
         var q_current_value = this.QState[horizontal_state][vertical_state][this.action];
         this.QState[horizontal_state][vertical_state][this.action] =
             q_current_value + this.learning_rate * (reward + q_next_value - q_current_value);
-        this.current_state = this.next_state.slice();
+        this.current_state = [this.next_state[0], this.next_state[1]];
     };
 
     this.getAction = function () {
@@ -86,10 +86,28 @@ var Brain = function (width_low, width_high, height_low, height_high) {
 
     this.fromJson = function (json) {
         this.QState = JSON.parse(json);
-    }
+    };
 
+    this.printOnDebug = function () {
+        $("#debug").text("");
+        var debug_string = "";
+        for (var i = 0; i < this.height_dist / this.resolution; i++) {
+            for (var j = 0; j < this.width_dist / this.resolution; j++) {
+                var debug_char = '';
+                if (this.QState[j][i]['click'] > this.QState[j][i]['noClick']) {
+                    debug_char = 'C ' + this.QState[j][i]['click'].toFixed(2);
+                } else {
+                    debug_char = 'N ' + this.QState[j][i]['noClick'].toFixed(2);
+                }
+                debug_string = debug_string + debug_char;
+            }
+            debug_string = debug_string + "<br />";
+        }
+        $("#debug").append(debug_string);
+    }
 
 };
 function random(min, max) {
     return Math.round(Math.random() * (max - min) + min);
 }
+

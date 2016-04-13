@@ -22,7 +22,7 @@ Agent.prototype = {
             }
         }
 
-        var vertical_dist = bird_back_y - closest_pipe_y - this.height_range[0];
+        var vertical_dist = closest_pipe_y- bird_back_y - this.height_range[0];
         var horizontal_dist = closest_pipe_x - bird_back_x - this.width_range[0];
         this.brain.getState(vertical_dist, horizontal_dist);
         this.brain.updateState(reward);

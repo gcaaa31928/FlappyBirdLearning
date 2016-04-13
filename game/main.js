@@ -1,5 +1,5 @@
 var game = new Phaser.Game(800, 490, Phaser.AUTO, 'game_area');
-var agent = new Agent(0, 180, -140, 250);
+var agent = new Agent(0, 380, -140, 250);
 var reward_chart = new rewardChart();
 var net_chart = new netChart(agent.width_dist / 20, agent.height_dist / 15);
 var reward_arr = [];
@@ -61,7 +61,9 @@ var mainState = {
             return;
         }
         if (game.physics.arcade.overlap(
-            this.bird.sprite, this.pipes.groups, this.restartGame, null, this)) {
+            this.bird.sprite, this.pipes.groups, null, null, this)) {
+            this.reward = -1000;
+            this.restartGame();
             return;
         }
 
@@ -85,6 +87,7 @@ var mainState = {
         game.state.start('main');
         this.state = 'died';
         learning();
+        agent.brain.printOnDebug();
         this.times++;
     }
 };

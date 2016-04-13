@@ -28,7 +28,7 @@ function Pipes(context) {
         this.closestPipe = [];
         var hole = Math.floor(Math.random() * 5) + 1;
         for (var i = 0; i < 8; i++) {
-            if (i == hole - 1) {
+            if (i == hole + 2) {
                 this.addOnePipe(800, i * 60 + 10, true);
             } else if (i != hole && i != hole + 1) {
                 this.addOnePipe(800, i * 60 + 10, false);
