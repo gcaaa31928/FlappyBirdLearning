@@ -8,7 +8,7 @@ var Brain = function (width_low, width_high, height_low, height_high) {
     this.QState = [];
     this.current_state = [0, 0];
     this.resolution = 10;
-    this.learning_rate = 0.9;
+    this.learning_rate = 0.7;
     this.random_explore = 0.0001;
     for (var i = 0; i <= this.width_dist / this.resolution; i++) {
         this.QState[i] = [];
@@ -19,6 +19,10 @@ var Brain = function (width_low, width_high, height_low, height_high) {
             }
         }
     }
+
+    this.setCurrentState = function (vertical_dist, horizontal_dist) {
+        this.current_state = [vertical_dist, horizontal_dist];
+    };
 
     this.getState = function (vertical_dist, horizontal_dist) {
         this.next_state = [vertical_dist, horizontal_dist];
@@ -93,11 +97,11 @@ var Brain = function (width_low, width_high, height_low, height_high) {
         var debug_string = "";
         for (var i = 0; i < this.height_dist / this.resolution; i++) {
             for (var j = 0; j < this.width_dist / this.resolution; j++) {
-                var debug_char = '';
+                var debug_char = "<span ";
                 if (this.QState[j][i]['click'] > this.QState[j][i]['noClick']) {
-                    debug_char = 'C ' + this.QState[j][i]['click'].toFixed(2);
+                    debug_char += "style=background:green;> C" + this.QState[j][i]['click'].toFixed(2);
                 } else {
-                    debug_char = 'N ' + this.QState[j][i]['noClick'].toFixed(2);
+                    debug_char += "style=background:red;> N" + this.QState[j][i]['noClick'].toFixed(2);
                 }
                 debug_string = debug_string + debug_char;
             }

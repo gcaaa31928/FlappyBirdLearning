@@ -57,19 +57,22 @@ var mainState = {
         this.reward = 1;
         if (this.bird.died()) {
             this.reward = -1000;
+            this.first_update = true;
             this.restartGame();
             return;
         }
         if (game.physics.arcade.overlap(
             this.bird.sprite, this.pipes.groups, null, null, this)) {
             this.reward = -1000;
+            this.first_update = true;
             this.restartGame();
             return;
         }
 
         this.bird.update();
         this.labelScore.text = this.context.score;
-        learning();
+        this.learning(this.first_update);
+        this.first_update = false;
     },
 
     destroy: function() {
@@ -86,9 +89,16 @@ var mainState = {
         game.time.events.remove(this.timer);
         game.state.start('main');
         this.state = 'died';
-        learning();
+        this.learning();
         agent.brain.printOnDebug();
         this.times++;
+    },
+
+    learning: function(first) {
+        var actionix = agent.think(this.bird, this.pipes, this.reward, first);
+        if (actionix == 'click') {
+            this.bird.jump();
+        }
     }
 };
 
@@ -98,13 +108,7 @@ function drawChart() {
     net_chart.updateData([[0,0,1],[0,1,100],[1,1,1000]]);
 }
 
-function learning() {
-    console.log(mainState.reward);
-    var actionix = agent.think(mainState.bird, mainState.pipes, mainState.reward);
-    if (actionix == 'click') {
-        mainState.bird.jump();
-    }
-}
+
 
 var startLearn = function () {
     game.paused = false;
