@@ -21,12 +21,14 @@ Agent.prototype = {
                 closest_pipe_y = pipe.y;
             }
         }
-
+        console.log(closest_pipe_y - bird_back_y);
         var vertical_dist = closest_pipe_y- bird_back_y - this.height_range[0];
         var horizontal_dist = closest_pipe_x - bird_back_x - this.width_range[0];
-        this.brain.getState(vertical_dist, horizontal_dist);
+        var sky_dist = bird_back_y;
+
+        this.brain.getState(vertical_dist, horizontal_dist, sky_dist);
         if (first) {
-            this.brain.setCurrentState(vertical_dist, horizontal_dist);
+            this.brain.setCurrentState(vertical_dist, horizontal_dist, sky_dist);
         }
         this.brain.updateState(reward);
         return this.brain.getAction();

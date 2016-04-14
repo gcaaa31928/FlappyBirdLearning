@@ -90,15 +90,15 @@ var mainState = {
         game.state.start('main');
         this.state = 'died';
         this.learning();
-        agent.brain.printOnDebug();
+        // agent.brain.printOnDebug();
         this.times++;
     },
 
     learning: function(first) {
         var actionix = agent.think(this.bird, this.pipes, this.reward, first);
-        if (actionix == 'click') {
-            this.bird.jump();
-        }
+        // if (actionix == 'click') {
+        //     this.bird.jump();
+        // }
     }
 };
 
