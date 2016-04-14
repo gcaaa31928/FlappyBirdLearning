@@ -9,14 +9,15 @@ var Brain = function (width_low, width_high, height_low, height_high) {
     this.QState = [];
     this.current_state = [0, 0, 0];
     this.next_state = [0, 0, 0];
-    this.resolution = 10;
+    this.resolution = 6;
+    this.sky_resolution = 30;
     this.learning_rate = 0.7;
     this.random_explore = 0.0001;
     for (var i = 0; i <= this.width_dist / this.resolution; i++) {
         this.QState[i] = [];
         for (var j = 0; j <= this.height_dist / this.resolution; j++) {
             this.QState[i][j] = [];
-            for (var k = 0; k <= this.sky_height / this.resolution; k++) {
+            for (var k = 0; k <= this.sky_height / this.sky_resolution; k++) {
                 this.QState[i][j][k] = {
                     'click': 0,
                     'noClick': 0
@@ -32,6 +33,12 @@ var Brain = function (width_low, width_high, height_low, height_high) {
     // this.getState = function (vertical_dist, horizontal_dist, sky_height) {
     //     this.next_state = [vertical_dist, horizontal_dist, sky_height];
     // };
+    this.restart = function () {
+        this.current_state = [0, 0, 0];
+        this.next_action = [1, 1, 1];
+        this.action = 'noClick';
+        this.next_action = 'noClick';
+    };
 
     this.updateState = function (vertical_dist, horizontal_dist, sky_dist, reward) {
         // step 1: get state
@@ -57,10 +64,10 @@ var Brain = function (width_low, width_high, height_low, height_high) {
         );
         vertical_state /= this.resolution;
         horizontal_state /= this.resolution;
-        sky_state /= this.resolution;
+        sky_state /= this.sky_resolution;
         vertical_next_state /= this.resolution;
         horizontal_next_state /= this.resolution;
-        sky_next_state /= this.resolution;
+        sky_next_state /= this.sky_resolution;
         vertical_state = vertical_state < 0 ? 0 : Math.floor(vertical_state);
         horizontal_state = horizontal_state < 0 ? 0 : Math.floor(horizontal_state);
         sky_state = sky_state < 0 ? 0 : Math.floor(sky_state);
@@ -69,7 +76,6 @@ var Brain = function (width_low, width_high, height_low, height_high) {
         sky_next_state = sky_next_state < 0 ? 0 : Math.floor(sky_next_state);
 
         // step 2: update
-        var max_next_q;
         if (vertical_state >= this.height_dist || vertical_state <= 0) {
             this.next_action = vertical_state >= this.height_dist ? 'noClick' : 'click';
         } else if (sky_state >= this.sky_height || sky_state <= 0) {
@@ -78,19 +84,18 @@ var Brain = function (width_low, width_high, height_low, height_high) {
             var click_q_next_value = this.QState[horizontal_next_state][vertical_next_state][sky_next_state]['click'];
             var no_click_q_next_value = this.QState[horizontal_next_state][vertical_next_state][sky_next_state]['noClick'];
             this.next_action = click_q_next_value > no_click_q_next_value ? 'click' : 'noClick';
-            max_next_q =  Math.max(click_q_next_value, no_click_q_next_value);
         }
-        this.QState[horizontal_state][vertical_state][sky_state][this.action] += 
-            this.learning_rate * (reward + max_next_q - this.QState[horizontal_state][vertical_state][sky_state][this.action]);
-        
+        var max_next_q = this.QState[horizontal_next_state][vertical_next_state][sky_next_state][this.next_action];
+        var current_q_value = this.QState[horizontal_state][vertical_state][sky_state][this.action];
+        this.QState[horizontal_state][vertical_state][sky_state][this.action] = current_q_value + this.learning_rate * (reward + max_next_q - current_q_value);
+
         // step 4: update s with s'
         this.action = this.next_action;
         this.current_state = [this.next_state[0], this.next_state[1], this.next_state[2]];
 
 
-
         // step 3: take the action a
-        return this.next_action
+        return this.next_action;
     };
 
     // this.getAction = function () {

@@ -90,7 +90,7 @@ var mainState = {
         game.state.start('main');
         this.state = 'died';
         this.learning();
-        // agent.brain.printOnDebug();
+        agent.brain.restart();
         this.times++;
     },
 
