@@ -76,19 +76,20 @@ var Brain = function (width_low, width_high, height_low, height_high) {
         sky_next_state = sky_next_state < 0 ? 0 : Math.floor(sky_next_state);
 
         // step 2: update
-        if (vertical_state >= this.height_dist || vertical_state <= 0) {
-            this.next_action = vertical_state >= this.height_dist ? 'noClick' : 'click';
-        } else if (sky_state >= this.sky_height || sky_state <= 0) {
-            this.next_action = sky_state >= 450 ? 'click' : 'noClick';
-        } else {
-            var click_q_next_value = this.QState[horizontal_next_state][vertical_next_state][sky_next_state]['click'];
-            var no_click_q_next_value = this.QState[horizontal_next_state][vertical_next_state][sky_next_state]['noClick'];
-            this.next_action = click_q_next_value > no_click_q_next_value ? 'click' : 'noClick';
+        if (vertical_next_state !== vertical_state || horizontal_next_state !== horizontal_state || sky_next_state !== sky_state) {
+            if (vertical_state >= this.height_dist || vertical_state <= 0) {
+                this.next_action = vertical_state >= this.height_dist ? 'noClick' : 'click';
+            } else if (sky_state >= this.sky_height || sky_state <= 0) {
+                this.next_action = sky_state >= 450 ? 'click' : 'noClick';
+            } else {
+                var click_q_next_value = this.QState[horizontal_next_state][vertical_next_state][sky_next_state]['click'];
+                var no_click_q_next_value = this.QState[horizontal_next_state][vertical_next_state][sky_next_state]['noClick'];
+                this.next_action = click_q_next_value > no_click_q_next_value ? 'click' : 'noClick';
+            }
+            var max_next_q = this.QState[horizontal_next_state][vertical_next_state][sky_next_state][this.next_action];
+            var current_q_value = this.QState[horizontal_state][vertical_state][sky_state][this.action];
+            this.QState[horizontal_state][vertical_state][sky_state][this.action] = current_q_value + this.learning_rate * (reward + max_next_q - current_q_value);
         }
-        var max_next_q = this.QState[horizontal_next_state][vertical_next_state][sky_next_state][this.next_action];
-        var current_q_value = this.QState[horizontal_state][vertical_state][sky_state][this.action];
-        this.QState[horizontal_state][vertical_state][sky_state][this.action] = current_q_value + this.learning_rate * (reward + max_next_q - current_q_value);
-
         // step 4: update s with s'
         this.action = this.next_action;
         this.current_state = [this.next_state[0], this.next_state[1], this.next_state[2]];
