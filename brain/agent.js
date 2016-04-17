@@ -1,12 +1,13 @@
-var Agent = function (width_low, width_high, height_low, height_high) {
+var Agent = function (width_low, width_high, height_low, height_high, sky_high, velocity_low, velocity_high) {
     this.width_range = [width_low, width_high];
     this.height_range = [height_low, height_high];
-    this.brain = new Brain(width_low, width_high, height_low, height_high)
+    this.velocity_range = [velocity_low, velocity_high];
+    this.brain = new Brain(width_low, width_high, height_low, height_high, sky_high, velocity_low, velocity_high)
 };
 
 Agent.prototype = {
     think: function (bird, pipes, reward, first) {
-        
+
         var bird_back_x = bird.sprite.x;
         var bird_back_y = bird.sprite.y;
 
@@ -24,12 +25,14 @@ Agent.prototype = {
         var vertical_dist = closest_pipe_y - bird_back_y - this.height_range[0];
         var horizontal_dist = closest_pipe_x - bird_back_x - this.width_range[0];
         var sky_dist = bird_back_y;
-
+        var velocity_dist = bird.sprite.body.velocity.y - this.velocity_range[0];
+        if (isNaN(velocity_dist))
+            velocity_dist = 0;
         // this.brain.getState(vertical_dist, horizontal_dist, sky_dist);
         // if (first) {
         //     this.brain.setCurrentState(vertical_dist, horizontal_dist, sky_dist);
         // }
         // console.log(bird.sprite.body.velocity.y);
-        return this.brain.updateState(vertical_dist, horizontal_dist, sky_dist, reward);
+        return this.brain.updateState(vertical_dist, horizontal_dist, sky_dist, velocity_dist, reward);
     }
 };

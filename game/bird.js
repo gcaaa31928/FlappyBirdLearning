@@ -19,12 +19,25 @@ function Bird(game) {
     };
 
     this.jump = function () {
+        // Add a vertical velocity to the bird
+        this.sprite.body.velocity.y = -350;
+        // Create an animation on the bird
+        var animation = this.game.add.tween(this.sprite);
+
+        // Change the angle of the bird to -20° in 100 milliseconds
+        animation.to({angle: -20}, 100);
+
+        // And start the animation
+        animation.start();
         this.sprite.body.velocity.y = -300;
     };
 
     this.update = function () {
+        if (this.sprite.angle < 20) {
+            this.sprite.angle += 1;
+        }
         this.sprite.body.velocity.y = Math.max(
-            Math.min(380,this.sprite.body.velocity.y), -300);
+            Math.min(550,this.sprite.body.velocity.y), -300);
     };
     
     this.died = function() {
