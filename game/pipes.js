@@ -11,7 +11,7 @@ function Pipes(context) {
     this.create = function () {
         this.groups = this.game.add.group();
         this.addRowOfPipes();
-        this.timer = this.game.time.events.loop(1500, this.addRowOfPipes, this);
+        this.timer = this.game.time.events.loop(1800, this.addRowOfPipes, this);
     };
 
     this.addOnePipe = function (x, y, mark) {
@@ -26,7 +26,8 @@ function Pipes(context) {
 
     this.addRowOfPipes = function () {
         this.closestPipe = [];
-        var hole = 5;//Math.floor(Math.random() * 5) + 1;
+        var hole = Math.floor(Math.random() * 5) + 1;
+
         for (var i = 0; i < 8; i++) {
             if (i == hole + 2) {
                 this.addOnePipe(800, i * 60 + 10, true);

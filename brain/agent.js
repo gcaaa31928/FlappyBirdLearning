@@ -29,6 +29,7 @@ Agent.prototype = {
         // if (first) {
         //     this.brain.setCurrentState(vertical_dist, horizontal_dist, sky_dist);
         // }
+        // console.log(bird.sprite.body.velocity.y);
         return this.brain.updateState(vertical_dist, horizontal_dist, sky_dist, reward);
     }
 };
