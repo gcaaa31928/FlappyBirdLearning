@@ -86,12 +86,13 @@ var Brain = function (width_low, width_high, height_low, height_high, sky_height
         return velocity_bin < 0 ? 0 : Math.floor(velocity_bin);
     };
 
-    this.updateQState = function(vertical_state,
+    this.updateQState = function(
                                  horizontal_state,
+                                 vertical_state,
                                  sky_state,
                                  velocity_state,
-                                 vertical_next_state,
                                  horizontal_next_state,
+                                 vertical_next_state,
                                  sky_next_state,
                                  velocity_next_state,
                                  previous_action,
@@ -105,7 +106,7 @@ var Brain = function (width_low, width_high, height_low, height_high, sky_height
             var no_click_q_next_value = this.QState[horizontal_next_state][vertical_next_state][sky_next_state][velocity_state]['noClick'];
             action = click_q_next_value > no_click_q_next_value ? 'click' : 'noClick';
         }
-        var max_next_q = this.QState[horizontal_next_state][vertical_next_state][sky_next_state][velocity_next_state][this.next_action];
+        var max_next_q = this.QState[horizontal_next_state][vertical_next_state][sky_next_state][velocity_next_state][action];
         var current_q_value = this.QState[horizontal_state][vertical_state][sky_state][velocity_state][previous_action];
         this.QState[horizontal_state][vertical_state][sky_state][velocity_state][previous_action] = current_q_value + this.learning_rate * (reward + max_next_q - current_q_value);
         return action

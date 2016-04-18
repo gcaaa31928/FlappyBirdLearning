@@ -152,12 +152,26 @@ describe('Test Brain', function () {
             brain.resolution = 1;
             brain.sky_resolution = 1;
             brain.initQState();
-            var action = brain.updateQState(4, 0, 0, 0, 0, 0, 0, 0, 0);
+            var action = brain.updateQState(0, 4, 0, 0, 0, 0, 0, 0, 'noClick', 0);
             expect(action).to.equal('noClick');
-            action = brain.updateQState(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            action = brain.updateQState(0, 0, 0, 0, 0, 0, 0, 0, 0, 'noClick', 0);
             expect(action).to.equal('click');
         });
-
+        it('update correctly information', function () {
+            var brain = new Brain(0, 4, 0, 4, 4, 0, 4);
+            brain.vertical_bin_offset = 0;
+            brain.velocity_grid = 1;
+            brain.resolution = 1;
+            brain.sky_resolution = 1;
+            brain.initQState();
+            brain.updateQState(0, 4, 0, 0, 0, 0, 0, 0, 'noClick', 1000);
+            var state = brain.QState[0][4][0][0]['noClick'];
+            expect(state).to.equal(700);
+            brain.updateQState(1, 1, 0, 0, 0, 4, 0, 0, 'click', -1000);
+            state = brain.QState[1][1][0][0]['click'];
+            expect(state).to.equal(-210);
+            brain.updateQState(1, 0, 0, 0, 1, 1, 0, 0, 'click', 0.7);
+        });
     });
 
 });
