@@ -57,8 +57,18 @@ describe('Test Brain', function () {
             brain.current_state = [3, 3, 3, 3];
             brain.next_state = [4, 4, 4, 4];
             brain.restart();
-            expect(brain.current_state, [0, 0, 0, 0]);
-            expect(brain.next_state, [1, 1, 1, 1]);
+            expect(brain.current_state).to.eql([0, 0, 0, 0]);
+            expect(brain.next_state).to.eql([1, 1, 1, 1]);
+            expect(brain.action).to.equal('noClick');
+            expect(brain.next_action).to.equal('noClick');
+        });
+    });
+
+    describe('set next state', function () {
+        it('should set correctly', function () {
+            var brain = new Brain(0, 4, 0, 4, 4, 0, 4);
+            brain.setNextState(1, 1, 1, 1);
+            expect(brain.next_state).to.eql([1, 1, 1, 1]);
         });
     });
 });

@@ -44,21 +44,22 @@ var Brain = function (width_low, width_high, height_low, height_high, sky_height
         }
     }
 
-    this.setNextState = function (vertical_dist, horizontal_dist, sky_height) {
-        this.current_state = [vertical_dist, horizontal_dist, sky_height];
-    };
-    
 
     this.restart = function () {
         this.current_state = [0, 0, 0, 0];
-        this.next_action = [1, 1, 1, 1];
+        this.next_state = [1, 1, 1, 1];
         this.action = 'noClick';
         this.next_action = 'noClick';
     };
 
+    this.setNextState = function (vertical_dist, horizontal_dist, sky_dist, velocity) {
+        this.next_state = [vertical_dist, horizontal_dist, sky_dist, velocity];
+    };
+
+
+
     this.updateState = function (vertical_dist, horizontal_dist, sky_dist, velocity, reward) {
         // step 1: get state
-        this.next_state = [vertical_dist, horizontal_dist, sky_dist, velocity];
 
         var vertical_state = Math.min(
             this.height_dist, this.current_state[0]
