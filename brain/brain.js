@@ -1,6 +1,7 @@
 var Brain = function (width_low, width_high, height_low, height_high, sky_height, velocity_low, velocity_height) {
     // 0 for click, 1 for don't click
     this.width_range = [width_low, width_high];
+
     this.height_range = [height_low, height_high];
     this.width_dist = width_high - width_low;
     this.height_dist = height_high - height_low;
@@ -12,10 +13,21 @@ var Brain = function (width_low, width_high, height_low, height_high, sky_height
     this.current_state = [0, 0, 0, 0];
     this.next_state = [0, 0, 0, 0];
     this.resolution = 4;
-    this.velocity_grid = 20;
+    this.velocity_grid = 60;
     this.sky_resolution = 150;
     this.learning_rate = 0.7;
     this.random_explore = 0.0001;
+
+    if (width_low > width_high)
+        throw 'width low must be lower than high value';
+    if (height_low > height_high)
+        throw 'height low must be lower than high value';
+    if (sky_height < 0)
+        throw 'sky height must be higher than zero';
+    if (velocity_low > velocity_height)
+        throw 'velocity low must be lower than high value';
+
+
     for (var i = 0; i <= this.width_dist / this.resolution; i++) {
         this.QState[i] = [];
         for (var j = 0; j <= this.height_dist / this.resolution; j++) {
@@ -32,13 +44,11 @@ var Brain = function (width_low, width_high, height_low, height_high, sky_height
         }
     }
 
-    // this.setCurrentState = function (vertical_dist, horizontal_dist, sky_height) {
-    //     this.current_state = [vertical_dist, horizontal_dist, sky_height];
-    // };
-    //
-    // this.getState = function (vertical_dist, horizontal_dist, sky_height) {
-    //     this.next_state = [vertical_dist, horizontal_dist, sky_height];
-    // };
+    this.setNextState = function (vertical_dist, horizontal_dist, sky_height) {
+        this.current_state = [vertical_dist, horizontal_dist, sky_height];
+    };
+    
+
     this.restart = function () {
         this.current_state = [0, 0, 0, 0];
         this.next_action = [1, 1, 1, 1];
@@ -120,10 +130,6 @@ var Brain = function (width_low, width_high, height_low, height_high, sky_height
     this.fromJson = function (json) {
         this.QState = JSON.parse(json);
     };
-
-
 };
-function random(min, max) {
-    return Math.round(Math.random() * (max - min) + min);
-}
 
+module.exports = Brain;

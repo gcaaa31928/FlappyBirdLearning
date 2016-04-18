@@ -1,0 +1,23 @@
+{
+  "name": "flappy-bird-learning",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha tests/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gcaaa31928/FlappyBirdLearning.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gcaaa31928/FlappyBirdLearning/issues"
+  },
+  "homepage": "https://github.com/gcaaa31928/FlappyBirdLearning#readme",
+  "dependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5"
+  }
+}
