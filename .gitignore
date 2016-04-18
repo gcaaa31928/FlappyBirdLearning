@@ -24,3 +24,4 @@
 /repositories/**/*
 /bower_components/**/*
 /http-server/**/*
+/coverage/**/*
