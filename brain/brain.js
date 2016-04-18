@@ -17,6 +17,7 @@ var Brain = function (width_low, width_high, height_low, height_high, sky_height
     this.sky_resolution = 150;
     this.learning_rate = 0.7;
     this.random_explore = 0.0001;
+    this.vertical_bin_offset = 25;
 
     if (width_low > width_high)
         throw 'width low must be lower than high value';
@@ -27,22 +28,23 @@ var Brain = function (width_low, width_high, height_low, height_high, sky_height
     if (velocity_low > velocity_height)
         throw 'velocity low must be lower than high value';
 
-
-    for (var i = 0; i <= this.width_dist / this.resolution; i++) {
-        this.QState[i] = [];
-        for (var j = 0; j <= this.height_dist / this.resolution; j++) {
-            this.QState[i][j] = [];
-            for (var k = 0; k <= this.sky_height / this.sky_resolution; k++) {
-                this.QState[i][j][k] = [];
-                for(var v = 0;v<=this.velocity_dist/this.velocity_grid;v++) {
-                    this.QState[i][j][k][v] = {
-                        'click': 0,
-                        'noClick': 0
-                    };
+    this.initQState = function() {
+        for (var i = 0; i <= this.width_dist / this.resolution; i++) {
+            this.QState[i] = [];
+            for (var j = 0; j <= this.height_dist / this.resolution; j++) {
+                this.QState[i][j] = [];
+                for (var k = 0; k <= this.sky_height / this.sky_resolution; k++) {
+                    this.QState[i][j][k] = [];
+                    for (var v = 0; v <= this.velocity_dist / this.velocity_grid; v++) {
+                        this.QState[i][j][k][v] = {
+                            'click': 0,
+                            'noClick': 0
+                        };
+                    }
                 }
             }
         }
-    }
+    };
 
 
     this.restart = function () {
@@ -56,65 +58,89 @@ var Brain = function (width_low, width_high, height_low, height_high, sky_height
         this.next_state = [vertical_dist, horizontal_dist, sky_dist, velocity];
     };
 
+    this.binVerticalState = function (vertical_state) {
+        var vertical_bin = Math.min(
+            this.height_dist, vertical_state
+        );
+        vertical_bin /= this.resolution;
+        return vertical_bin < 0 ? 0 : Math.floor(vertical_bin);
+    };
+
+    this.binHorizontalState = function (horizontal_state) {
+        var horizontal_bin = Math.min(
+            this.width_dist, horizontal_state
+        );
+        horizontal_bin /= this.resolution;
+        return horizontal_bin < 0 ? 0 : Math.floor(horizontal_bin);
+    };
+
+    this.binSkyDist = function (sky_state) {
+        var sky_bin = Math.min(this.sky_height, sky_state);
+        sky_bin /= this.sky_resolution;
+        return sky_bin < 0 ? 0 : Math.floor(sky_bin);
+    };
+
+    this.binVelocityState = function (velocity) {
+        var velocity_bin = Math.min(this.velocity_dist, velocity);
+        velocity_bin /= this.velocity_grid;
+        return velocity_bin < 0 ? 0 : Math.floor(velocity_bin);
+    };
+
+    this.updateQState = function(vertical_state,
+                                 horizontal_state,
+                                 sky_state,
+                                 velocity_state,
+                                 vertical_next_state,
+                                 horizontal_next_state,
+                                 sky_next_state,
+                                 velocity_next_state,
+                                 previous_action,
+                                 reward
+    ) {
+        var action = null;
+        if (vertical_state >= (this.height_dist / this.resolution) - this.vertical_bin_offset || vertical_state <= this.vertical_bin_offset) {
+            action = vertical_state >= (this.height_dist / this.resolution) - this.vertical_bin_offset ? 'noClick' : 'click';
+        } else {
+            var click_q_next_value = this.QState[horizontal_next_state][vertical_next_state][sky_next_state][velocity_next_state]['click'];
+            var no_click_q_next_value = this.QState[horizontal_next_state][vertical_next_state][sky_next_state][velocity_state]['noClick'];
+            action = click_q_next_value > no_click_q_next_value ? 'click' : 'noClick';
+        }
+        var max_next_q = this.QState[horizontal_next_state][vertical_next_state][sky_next_state][velocity_next_state][this.next_action];
+        var current_q_value = this.QState[horizontal_state][vertical_state][sky_state][velocity_state][previous_action];
+        this.QState[horizontal_state][vertical_state][sky_state][velocity_state][previous_action] = current_q_value + this.learning_rate * (reward + max_next_q - current_q_value);
+        return action
+    };
 
 
     this.updateState = function (vertical_dist, horizontal_dist, sky_dist, velocity, reward) {
         // step 1: get state
 
-        var vertical_state = Math.min(
-            this.height_dist, this.current_state[0]
-        );
-        var horizontal_state = Math.min(
-            this.width_dist, this.current_state[1]
-        );
-        var sky_state = Math.min(
-            this.sky_height, this.current_state[2]
-        );
-        var velocity_state = Math.min(
-            this.velocity_dist, this.current_state[3]
-        );
-        var vertical_next_state = Math.min(
-            this.height_dist, this.next_state[0]
-        );
-        var horizontal_next_state = Math.min(
-            this.width_dist, this.next_state[1]
-        );
-        var sky_next_state = Math.min(
-            this.sky_height, this.next_state[2]
-        );
-        var velocity_next_state = Math.min(
-            this.velocity_dist, this.next_state[3]
-        );
-        vertical_state /= this.resolution;
-        horizontal_state /= this.resolution;
-        sky_state /= this.sky_resolution;
-        velocity_state /= this.velocity_grid;
-        vertical_next_state /= this.resolution;
-        horizontal_next_state /= this.resolution;
-        sky_next_state /= this.sky_resolution;
-        velocity_next_state /= this.velocity_grid;
-        vertical_state = vertical_state < 0 ? 0 : Math.floor(vertical_state);
-        horizontal_state = horizontal_state < 0 ? 0 : Math.floor(horizontal_state);
-        sky_state = sky_state < 0 ? 0 : Math.floor(sky_state);
-        velocity_state = velocity_state < 0 ? 0 : Math.floor(velocity_state);
-        vertical_next_state = vertical_next_state < 0 ? 0 : Math.floor(vertical_next_state);
-        horizontal_next_state = horizontal_next_state < 0 ? 0 : Math.floor(horizontal_next_state);
-        sky_next_state = sky_next_state < 0 ? 0 : Math.floor(sky_next_state);
-        velocity_next_state = velocity_next_state < 0 ? 0 : Math.floor(velocity_next_state);
+        var vertical_state = this.binVerticalState(this.current_state[0]);
+        var horizontal_state = this.binHorizontalState(this.current_state[1]);
+        var sky_state = this.binSkyDist(this.current_state[2]);
+        var velocity_state = this.binVelocityState(this.current_state[3]);
+
+        var vertical_next_state = this.binVerticalState(this.next_state[0]);
+        var horizontal_next_state = this.binVerticalState(this.next_state[1]);
+        var sky_next_state = this.binVerticalState(this.next_state[2]);
+        var velocity_next_state = this.binVerticalState(this.next_state[3]);
 
         // step 2: update
 
-        if (vertical_state >= (this.height_dist / this.resolution) - 30 || vertical_state <= 25) {
-            this.next_action = vertical_state >= (this.height_dist / this.resolution) - 30 ? 'noClick' : 'click';
-        } else {
-            var click_q_next_value = this.QState[horizontal_next_state][vertical_next_state][sky_next_state][velocity_next_state]['click'];
-            var no_click_q_next_value = this.QState[horizontal_next_state][vertical_next_state][sky_next_state][velocity_state]['noClick'];
-            this.next_action = click_q_next_value > no_click_q_next_value ? 'click' : 'noClick';
-        }
-        var max_next_q = this.QState[horizontal_next_state][vertical_next_state][sky_next_state][velocity_next_state][this.next_action];
-        var current_q_value = this.QState[horizontal_state][vertical_state][sky_state][velocity_state][this.action];
-        this.QState[horizontal_state][vertical_state][sky_state][velocity_state][this.action] = current_q_value + this.learning_rate * (reward + max_next_q - current_q_value);
-        // step 4: update s with s'
+        this.next_action = this.updateQState(
+            vertical_state,
+            horizontal_state, 
+            sky_state, 
+            velocity_state, 
+            vertical_next_state, 
+            horizontal_next_state, 
+            sky_next_state, 
+            velocity_next_state,
+            this.action,
+            reward
+        );
+
+       // step 4: update s with s'
 
         this.action = this.next_action;
         this.current_state = [this.next_state[0], this.next_state[1], this.next_state[2], this.next_state[3]];

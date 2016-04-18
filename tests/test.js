@@ -31,6 +31,7 @@ describe('Test Brain', function () {
     describe('QState', function () {
         it('should init QState correctly', function () {
             var brain = new Brain(0, 1, 0, 1, 1, 0, 1);
+            brain.initQState();
             var expected = [];
             for (var i = 0; i <= 0; i++) {
                 expected[i] = [];
@@ -71,4 +72,92 @@ describe('Test Brain', function () {
             expect(brain.next_state).to.eql([1, 1, 1, 1]);
         });
     });
+
+    describe('bin vertical state', function () {
+        it('should puts higher vertical state in corrects bins', function () {
+            var brain = new Brain(0, 4, 0, 4, 4, 0, 4);
+            brain.resolution = 2;
+            expect(brain.binVerticalState(100)).to.equal(2);
+        });
+        it('should puts negative vertical state in corrects bins', function () {
+            var brain = new Brain(0, 4, 0, 4, 4, 0, 4);
+            brain.resolution = 2;
+            expect(brain.binVerticalState(-100)).to.equal(0);
+        });
+        it('should puts float vertical state in corrects bins', function () {
+            var brain = new Brain(0, 4, 0, 4, 4, 0, 4);
+            brain.resolution = 2;
+            expect(brain.binVerticalState(2.02000020202020)).to.equal(1);
+        });
+    });
+
+    describe('bin horizontal state', function () {
+        it('should puts higher horizontal state in corrects bins', function () {
+            var brain = new Brain(0, 4, 0, 4, 4, 0, 4);
+            brain.resolution = 2;
+            expect(brain.binHorizontalState(100)).to.equal(2);
+        });
+        it('should puts negative horizontal state in corrects bins', function () {
+            var brain = new Brain(0, 4, 0, 4, 4, 0, 4);
+            brain.resolution = 2;
+            expect(brain.binHorizontalState(-100)).to.equal(0);
+        });
+        it('should puts float horizontal state in corrects bins', function () {
+            var brain = new Brain(0, 4, 0, 4, 4, 0, 4);
+            brain.resolution = 2;
+            expect(brain.binHorizontalState(2.02000020202020)).to.equal(1);
+        });
+    });
+
+    describe('bin sky state', function () {
+        it('should puts higher sky state in corrects bins', function () {
+            var brain = new Brain(0, 4, 0, 4, 4, 0, 4);
+            brain.sky_resolution = 2;
+            expect(brain.binSkyDist(100)).to.equal(2);
+        });
+        it('should puts negative vertical state in corrects bins', function () {
+            var brain = new Brain(0, 4, 0, 4, 4, 0, 4);
+            brain.sky_resolution = 2;
+            expect(brain.binSkyDist(-100)).to.equal(0);
+        });
+        it('should puts float vertical state in corrects bins', function () {
+            var brain = new Brain(0, 4, 0, 4, 4, 0, 4);
+            brain.sky_resolution = 2;
+            expect(brain.binSkyDist(2.02000020202020)).to.equal(1);
+        });
+    });
+    describe('bin velocity state', function () {
+        it('should puts higher velocity state in corrects bins', function () {
+            var brain = new Brain(0, 4, 0, 4, 4, 0, 4);
+            brain.velocity_grid = 2;
+            expect(brain.binVelocityState(100)).to.equal(2);
+        });
+        it('should puts negative velocity state in corrects bins', function () {
+            var brain = new Brain(0, 4, 0, 4, 4, 0, 4);
+            brain.velocity_grid = 2;
+            expect(brain.binVelocityState(-100)).to.equal(0);
+        });
+        it('should puts float velocity state in corrects bins', function () {
+            var brain = new Brain(0, 4, 0, 4, 4, 0, 4);
+            brain.velocity_grid = 2;
+            expect(brain.binVelocityState(2.02000020202020)).to.equal(1);
+        });
+    });
+
+    describe('update QState', function () {
+        it('vertical state in others region', function () {
+            var brain = new Brain(0, 4, 0, 4, 4, 0, 4);
+            brain.vertical_bin_offset = 0;
+            brain.velocity_grid = 1;
+            brain.resolution = 1;
+            brain.sky_resolution = 1;
+            brain.initQState();
+            var action = brain.updateQState(4, 0, 0, 0, 0, 0, 0, 0, 0);
+            expect(action).to.equal('noClick');
+            action = brain.updateQState(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            expect(action).to.equal('click');
+        });
+
+    });
+
 });
