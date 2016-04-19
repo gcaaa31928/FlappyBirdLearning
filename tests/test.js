@@ -173,5 +173,16 @@ describe('Test Brain', function () {
             brain.updateQState(1, 0, 0, 0, 1, 1, 0, 0, 'click', 0.7);
         });
     });
-
+    describe('update current state', function () {
+        it('regularly update current state correctly', function () {
+            var brain = new Brain(0, 4, 0, 4, 4, 0, 4);
+            brain.action = null;
+            brain.current_state = [1, 1, 1, 1];
+            brain.next_action = 'noClick';
+            brain.next_state = [5, 5, 5, 5];
+            brain.updateCurrentState();
+            expect(brain.action).to.equal('noClick');
+            expect(brain.current_state).to.eql([5, 5, 5, 5]);
+        });
+    });
 });

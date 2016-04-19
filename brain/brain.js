@@ -57,6 +57,11 @@ var Brain = function (width_low, width_high, height_low, height_high, sky_height
     this.setNextState = function (vertical_dist, horizontal_dist, sky_dist, velocity) {
         this.next_state = [vertical_dist, horizontal_dist, sky_dist, velocity];
     };
+    
+    this.updateCurrentState = function() {
+        this.action = this.next_action;
+        this.current_state = [this.next_state[0], this.next_state[1], this.next_state[2], this.next_state[3]];
+    };
 
     this.binVerticalState = function (vertical_state) {
         var vertical_bin = Math.min(
@@ -142,10 +147,7 @@ var Brain = function (width_low, width_high, height_low, height_high, sky_height
         );
 
        // step 4: update s with s'
-
-        this.action = this.next_action;
-        this.current_state = [this.next_state[0], this.next_state[1], this.next_state[2], this.next_state[3]];
-
+        this.updateCurrentState();
 
         // step 3: take the action a
         return this.next_action;
