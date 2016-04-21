@@ -185,4 +185,12 @@ describe('Test Brain', function () {
             expect(brain.current_state).to.eql([5, 5, 5, 5]);
         });
     });
+    describe('learning', function () {
+        it('learning corretly', function () {
+            var brain = new Brain(0, 4, 0, 4, 4, 0, 4);
+            
+        });
+    });
+
+
 });

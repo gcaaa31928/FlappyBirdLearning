@@ -118,7 +118,7 @@ var Brain = function (width_low, width_high, height_low, height_high, sky_height
     };
 
 
-    this.updateState = function (vertical_dist, horizontal_dist, sky_dist, velocity, reward) {
+    this.learning = function (vertical_dist, horizontal_dist, sky_dist, velocity, reward) {
         // step 1: get state
 
         var vertical_state = this.binVerticalState(this.current_state[0]);
@@ -161,5 +161,6 @@ var Brain = function (width_low, width_high, height_low, height_high, sky_height
         this.QState = JSON.parse(json);
     };
 };
+
 
 module.exports = Brain;
