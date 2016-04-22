@@ -187,8 +187,21 @@ describe('Test Brain', function () {
     });
     describe('learning', function () {
         it('learning corretly', function () {
-            var brain = new Brain(0, 4, 0, 4, 4, 0, 4);
-            
+            var brain = new Brain(0, 100, 0, 100, 100, 0, 1);
+            brain.vertical_bin_offset = 0;
+            brain.velocity_grid = 1;
+            brain.resolution = 1;
+            brain.sky_resolution = 1;
+            brain.initQState();
+            for (var reward = -1000; reward < 1000; reward++) {
+                for (var i = 0; i < 100; i++) {
+                    brain.learning(i, i, i, 0, reward);
+                }
+            }
+            expect(brain.learning(1, 1, 1, 0, -900)).to.equal('click');
+            expect(brain.learning(2, 2, 2, 0, -800)).to.equal('noClick');
+            expect(brain.QState[0][0][0][0]['click']).to.equal(-176636.18944466353);
+            expect(brain.QState[0][0][0][0]['noClick']).to.equal(175179.00387099668);
         });
     });
 
