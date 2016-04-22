@@ -185,9 +185,9 @@ describe('Test Brain', function () {
             expect(brain.current_state).to.eql([5, 5, 5, 5]);
         });
     });
-    describe('learning', function () {
+    describe('machine learning', function () {
         it('learning correctly', function () {
-            var brain = new Brain(0, 100, 0, 100, 100, 0, 1);
+            var brain = new Brain(0, 10, 0, 10, 10, 0, 1);
             brain.vertical_bin_offset = 0;
             brain.velocity_grid = 1;
             brain.resolution = 1;
@@ -204,6 +204,4 @@ describe('Test Brain', function () {
             expect(brain.QState[0][0][0][0]['noClick']).to.equal(-3.4999999999999996);
         });
     });
-
-
 });
