@@ -6,6 +6,11 @@
 
 此為利用機器學習的方式自動學習flappy bird的專案，而學習方法則是用Q Learning
 
+### Get started
+```bash
+npm install
+bower install
+```
 
 ### Game Framework
 利用Phaser.js製作出flappy bird遊戲，如下圖
