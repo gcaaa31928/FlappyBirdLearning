@@ -56,7 +56,7 @@ bower install
 
 
 ### Authors and Contributors
-@gcaa31928
+@gcaaa31928
 
 ### Support or Contact
 有任何意見可以開issues或是pull request
