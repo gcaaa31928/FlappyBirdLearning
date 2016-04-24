@@ -20,7 +20,7 @@ function Bird(game) {
 
     this.jump = function () {
         // Add a vertical velocity to the bird
-        this.sprite.body.velocity.y = -350;
+        this.sprite.body.velocity.y = -400;
         // Create an animation on the bird
         var animation = this.game.add.tween(this.sprite);
 

@@ -2,7 +2,6 @@ function Pipes(context) {
     this.context = context;
     this.game = this.context.game;
     this.groups = this.game.add.group();
-    this.closestPipe = [];
 
     this.preload = function () {
         this.game.load.image('pipes', 'assets/pipe.png');
@@ -11,7 +10,7 @@ function Pipes(context) {
     this.create = function () {
         this.groups = this.game.add.group();
         this.addRowOfPipes();
-        this.timer = this.game.time.events.loop(1800, this.addRowOfPipes, this);
+        this.timer = this.game.time.events.loop(1400, this.addRowOfPipes, this);
     };
 
     this.addOnePipe = function (x, y, mark) {
@@ -25,7 +24,6 @@ function Pipes(context) {
     };
 
     this.addRowOfPipes = function () {
-        this.closestPipe = [];
         var hole = Math.floor(Math.random() * 5) + 1;
 
         for (var i = 0; i < 8; i++) {
@@ -39,7 +37,6 @@ function Pipes(context) {
         this.groups.forEachDead(function (pipe) {
             that.groups.remove(pipe);
         });
-        this.context.score += 1;
     };
 
 

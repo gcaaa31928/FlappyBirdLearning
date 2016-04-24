@@ -125,9 +125,9 @@ var Brain = function (width_low, width_high, height_low, height_high, sky_height
         var velocity_state = this.binVelocityState(this.current_state[3]);
 
         var vertical_next_state = this.binVerticalState(this.next_state[0]);
-        var horizontal_next_state = this.binVerticalState(this.next_state[1]);
-        var sky_next_state = this.binVerticalState(this.next_state[2]);
-        var velocity_next_state = this.binVerticalState(this.next_state[3]);
+        var horizontal_next_state = this.binHorizontalState(this.next_state[1]);
+        var sky_next_state = this.binSkyDist(this.next_state[2]);
+        var velocity_next_state = this.binVelocityState(this.next_state[3]);
 
         // step 2: update
 
@@ -136,8 +136,8 @@ var Brain = function (width_low, width_high, height_low, height_high, sky_height
             vertical_state,
             sky_state,
             velocity_state,
-            vertical_next_state,
             horizontal_next_state,
+            vertical_next_state,
             sky_next_state,
             velocity_next_state,
             this.action,

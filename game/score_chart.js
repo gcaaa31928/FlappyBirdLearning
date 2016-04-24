@@ -1,9 +1,9 @@
-var rewardChart = function() {
+var score_chart = function() {
 
 
     var margin = {top: 20, right: 20, bottom: 30, left: 50},
-        width = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
+        width = 800 - margin.left - margin.right,
+        height = 250 - margin.top - margin.bottom;
 
     var formatDate = d3.time.format("%d-%b-%y");
 
@@ -26,7 +26,7 @@ var rewardChart = function() {
         .y(function(d) { return y(d.close); });
 
 
-    this.svg = d3.select("#reward_chart").append("svg")
+    this.svg = d3.select("#score_chart").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
@@ -44,7 +44,7 @@ var rewardChart = function() {
             .attr("y", 6)
             .attr("dy", ".71em")
             .style("text-anchor", "end")
-            .text("Reward");
+            .text("Score");
 
         this.svg.append("path")
             .attr("class", "line")
@@ -65,7 +65,7 @@ var rewardChart = function() {
              return d.close;
          }));
 
-        var svg = d3.select("#reward_chart").transition();
+        var svg = d3.select("#score_chart").transition();
 
         // Make the changes
         svg.select(".line")   // change the line

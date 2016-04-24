@@ -2,7 +2,8 @@ var Agent = function (width_low, width_high, height_low, height_high, sky_high, 
     this.width_range = [width_low, width_high];
     this.height_range = [height_low, height_high];
     this.velocity_range = [velocity_low, velocity_high];
-    this.brain = new Brain(width_low, width_high, height_low, height_high, sky_high, velocity_low, velocity_high)
+    this.brain = new Brain(width_low, width_high, height_low, height_high, sky_high, velocity_low, velocity_high);
+    this.brain.initQState();
 };
 
 Agent.prototype = {
@@ -28,11 +29,6 @@ Agent.prototype = {
         var velocity_dist = bird.sprite.body.velocity.y - this.velocity_range[0];
         if (isNaN(velocity_dist))
             velocity_dist = 0;
-        // this.brain.getState(vertical_dist, horizontal_dist, sky_dist);
-        // if (first) {
-        //     this.brain.setCurrentState(vertical_dist, horizontal_dist, sky_dist);
-        // }
-        // console.log(bird.sprite.body.velocity.y);
-        return this.brain.updateState(vertical_dist, horizontal_dist, sky_dist, velocity_dist, reward);
+        return this.brain.learning(horizontal_dist, vertical_dist, sky_dist, velocity_dist, reward);
     }
 };

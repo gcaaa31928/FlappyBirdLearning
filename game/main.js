@@ -1,7 +1,6 @@
 var game = new Phaser.Game(800, 490, Phaser.AUTO, 'game_area');
-var agent = new Agent(0, 380, -140, 250, 450, -300, 550);
-var reward_chart = new rewardChart();
-var net_chart = new netChart(agent.width_dist / 20, agent.height_dist / 15);
+var agent = new Agent(0, 380, -140, 250, 450, -400, 550);
+var score_chart = new score_chart();
 var reward_arr = [];
 var mainState = {
     state: 'init',
@@ -23,6 +22,7 @@ var mainState = {
         this.pipes = new Pipes(this.context);
         this.pipes.preload();
         this.state = 'preload';
+        this.timer = this.game.time.events.loop(140, this.scoreIncrement, this);
     },
 
     create: function () {
@@ -70,7 +70,7 @@ var mainState = {
         }
 
         this.bird.update();
-        this.labelScore.text = this.context.score;
+        this.labelScore.text = parseInt(this.context.score).toString();
         this.learning(this.first_update);
         this.first_update = false;
     },
@@ -94,6 +94,10 @@ var mainState = {
         this.times++;
     },
 
+    scoreIncrement: function () {
+        this.context.score += 0.1;
+    },
+
     learning: function (first) {
         var actionix = agent.think(this.bird, this.pipes, this.reward, first);
         if (actionix == 'click') {
@@ -104,28 +108,23 @@ var mainState = {
 
 function drawChart() {
     reward_arr.push([mainState.times, mainState.context.score]);
-    reward_chart.updateData(reward_arr);
-    net_chart.updateData([[0, 0, 1], [0, 1, 100], [1, 1, 1000]]);
+    score_chart.updateData(reward_arr);
 }
 
+function saveLearningData() {
+    var blob = new Blob(["some text"], {
+        type: "text/plain;charset=utf-8;"
+    });
+    var text = agent.brain.toJson();
+    saveAs(blob, text);
+}
 
-var startLearn = function () {
+var start = function () {
     game.paused = false;
 };
-var stopLearn = function () {
+var stop = function () {
     game.paused = true;
 };
-
-var saveNet = function () {
-    var j = agent.brain.toJson();
-    document.getElementById('tt').value = j;
-};
-
-var loadNet = function () {
-    var t = document.getElementById('tt').value;
-    agent.brain.fromJson(t);
-};
-
 // Add and start the 'main' state to start the game
 game.state.add('main', mainState);
 game.state.start('main');
