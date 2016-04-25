@@ -112,12 +112,13 @@ function drawChart() {
 }
 
 function saveLearningData() {
-    var blob = new Blob(["some text"], {
-        type: "text/plain;charset=utf-8;"
-    });
-    var text = agent.brain.toJson();
-    saveAs(blob, text);
+    window.localStorage.setItem("brain", agent.brain.toJson());
 }
+
+function loadLearningData() {
+    agent.brain.fromJson(window.localStorage.getItem("brain"));
+}
+
 
 var start = function () {
     game.paused = false;
@@ -125,6 +126,20 @@ var start = function () {
 var stop = function () {
     game.paused = true;
 };
+
+function download(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+}
+
 // Add and start the 'main' state to start the game
 game.state.add('main', mainState);
 game.state.start('main');
