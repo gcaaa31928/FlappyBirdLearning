@@ -6,6 +6,9 @@
 
 此為利用機器學習的方式自動學習flappy bird的專案，而學習方法則是用Q Learning
 
+部份參考至http://sarvagyavaish.github.io/FlappyBirdRL/
+
+
 ### Get started
 ```bash
 npm install
