@@ -125,6 +125,12 @@ function loadTenMinutesData() {
     });
 }
 
+function loadOneHourData() {
+    $.getJSON("./data/one-hour.data", function(json) {
+        agent.brain.QState = json;
+    });
+}
+
 
 var start = function () {
     game.paused = false;
