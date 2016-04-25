@@ -119,6 +119,12 @@ function loadLearningData() {
     agent.brain.fromJson(window.localStorage.getItem("brain"));
 }
 
+function loadTenMinutesData() {
+    $.getJSON("./data/ten-minutes.data", function (json) {
+        agent.brain.QState = json;
+    });
+}
+
 
 var start = function () {
     game.paused = false;
