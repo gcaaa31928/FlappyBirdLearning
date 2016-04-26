@@ -1,5 +1,7 @@
 # FlappyBirdLearning
 
+[![Join the chat at https://gitter.im/gcaaa31928/FlappyBirdLearning](https://badges.gitter.im/gcaaa31928/FlappyBirdLearning.svg)](https://gitter.im/gcaaa31928/FlappyBirdLearning?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/gcaaa31928/FlappyBirdLearning.svg?branch=master)](https://travis-ci.org/gcaaa31928/FlappyBirdLearning)
 [![Coverage Status](https://coveralls.io/repos/github/gcaaa31928/FlappyBirdLearning/badge.svg?branch=master)](https://coveralls.io/github/gcaaa31928/FlappyBirdLearning?branch=master)
 
